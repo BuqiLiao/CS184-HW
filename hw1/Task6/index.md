@@ -15,7 +15,14 @@ This task implements mipmap level sampling for texture mapping, supporting three
 
 ### Approach
 
-[**TODO: Explain level sampling in your own words and describe how you implemented it for texture mapping.**]
+Level sampling is a technique that adaptively selects the appropriate mipmap level based on how much the texture is being scaled during rendering. When a texture is viewed from far away or at an angle, fewer texels are needed to represent the same screen area, so we can use lower resolution mipmap levels to improve performance and reduce aliasing artifacts.
+
+I implemented level sampling by:
+
+1. Computing texture coordinate derivatives using barycentric interpolation
+2. Calculating the appropriate mipmap level based on these derivatives
+3. Sampling from the selected level(s) using the specified level sampling method
+4. Combining multiple levels when using linear level sampling
 
 ### Key Algorithms
 
@@ -27,36 +34,8 @@ This task implements mipmap level sampling for texture mapping, supporting three
 
 ### Code Structure
 
-```cpp
-// Key implementations in rasterizer.cpp and texture.cpp
-void RasterizerImp::rasterize_textured_triangle(
-    float x0, float y0, float u0, float v0,
-    float x1, float y1, float u1, float v1,
-    float x2, float y2, float u2, float v2,
-    Texture& tex) {
-    // TODO: Implement mipmap level sampling
-    // 1. Calculate barycentric coordinates for (x,y), (x+1,y), (x,y+1)
-    // 2. Compute texture coordinates for all three points
-    // 3. Calculate derivatives du/dx, dv/dx, du/dy, dv/dy
-    // 4. Create SampleParams struct and call Texture::sample
-}
-
-float Texture::get_level(const SampleParams& sp) {
-    // TODO: Implement mipmap level calculation
-    // 1. Calculate difference vectors sp.p_dx_uv - sp.p_uv and sp.p_dy_uv - sp.p_uv
-    // 2. Scale by texture width and height
-    // 3. Compute level using the formula from lecture
-    // 4. Return appropriate mipmap level
-}
-
-Color Texture::sample(const SampleParams& sp) {
-    // TODO: Implement level sampling with different methods
-    // 1. Get mipmap level using get_level()
-    // 2. Handle L_ZERO, L_NEAREST, L_LINEAR cases
-    // 3. Call appropriate pixel sampling function
-    // 4. For L_LINEAR, interpolate between two levels
-}
-```
+- `sample` and `get_level` functions in `texture.cpp`
+- `rasterize_textured_triangle` function in `rasterizer.cpp`
 
 ## Mathematical Foundation
 
@@ -73,9 +52,7 @@ where:
 
 ### Derivative Computation
 
-[**TODO: Explain how you compute the texture coordinate derivatives**]
-
-For a point (x,y) in screen space:
+I compute texture coordinate derivatives by calculating barycentric coordinates for three screen positions: the current sample point (x,y), and its neighbors (x+1,y) and (x,y+1). For each position, I interpolate the texture coordinates using barycentric weights, then compute the differences:
 
 ```
 du/dx = u(x+1,y) - u(x,y)
@@ -84,19 +61,21 @@ du/dy = u(x,y+1) - u(x,y)
 dv/dy = v(x,y+1) - v(x,y)
 ```
 
+The derivatives are then scaled by the texture dimensions to convert from normalized UV space to texel space.
+
 ### Level Sampling Methods
 
-[**TODO: Explain the three level sampling methods**]
+I implemented three level sampling methods:
 
-1. **L_ZERO**: Always use level 0 (highest resolution)
-2. **L_NEAREST**: Use the nearest integer level
-3. **L_LINEAR**: Interpolate between two adjacent levels
+1. **L_ZERO**: Always use level 0 (highest resolution), ignoring the computed level
+2. **L_NEAREST**: Round the computed level to the nearest integer and sample from that mipmap level
+3. **L_LINEAR**: Use linear interpolation between two adjacent mipmap levels based on the fractional part of the computed level
 
 ## Results
 
 ### Sampling Method Comparisons
 
-[**TODO: Using a png file you find yourself, show us four versions of the image, using the combinations of L_ZERO and P_NEAREST, L_ZERO and P_LINEAR, L_NEAREST and P_NEAREST, as well as L_NEAREST and P_LINEAR.**]
+The following images demonstrate the different combinations of level sampling and pixel sampling methods. These comparisons show how the choice of sampling method affects texture quality, particularly in areas where the texture is viewed at an angle or from a distance.
 
 #### L_ZERO + P_NEAREST
 
@@ -116,130 +95,102 @@ dv/dy = v(x,y+1) - v(x,y)
 
 ### Analysis
 
-[**TODO: Discuss the visual differences and quality improvements**]
+The visual differences between these sampling methods are most apparent in areas where the texture is viewed obliquely or from a distance:
+
+- **L_ZERO methods**: Always use the highest resolution mipmap, which can lead to aliasing artifacts when the texture is viewed from far away or at an angle
+- **L_NEAREST methods**: Adaptively select appropriate mipmap levels, reducing aliasing but potentially introducing some blurring
+- **P_NEAREST vs P_LINEAR**: Linear pixel sampling provides smoother results within each mipmap level, reducing pixel-level artifacts
+
+The combination of L_NEAREST + P_LINEAR typically provides the best balance of quality and performance for most applications.
 
 ## Implementation Details
 
 ### SampleParams Structure
 
-[**TODO: Explain how you use the SampleParams struct**]
+I use the SampleParams struct to pass all necessary information for texture sampling:
 
 ```cpp
 struct SampleParams {
     Vector2D p_uv;      // Texture coordinates at (x,y)
     Vector2D p_dx_uv;   // Texture coordinates at (x+1,y)
     Vector2D p_dy_uv;   // Texture coordinates at (x,y+1)
-    // ... other parameters
+    PixelSampleMethod psm;  // P_NEAREST or P_LINEAR
+    LevelSampleMethod lsm;  // L_ZERO, L_NEAREST, or L_LINEAR
 };
 ```
 
 ### Derivative Calculation
 
-[**TODO: Explain your approach to computing texture coordinate derivatives**]
+My approach to computing texture coordinate derivatives involves:
+
+1. **Barycentric Coordinate Calculation**: For each sample point, I compute barycentric coordinates (α, β, γ) using the edge function method
+2. **Texture Coordinate Interpolation**: I interpolate texture coordinates using the barycentric weights: `u = α*u₀ + β*u₁ + γ*u₂`
+3. **Derivative Computation**: I compute the differences between texture coordinates at neighboring screen positions
+4. **Scaling**: I scale the derivatives by texture dimensions to convert to texel space
+
+This approach ensures accurate derivatives that properly represent how texture coordinates change with respect to screen coordinates.
 
 ### Level Interpolation
 
-[**TODO: Explain how you implement linear level sampling**]
+For linear level sampling (L_LINEAR), I implement trilinear filtering by:
+
+1. **Level Calculation**: Computing the fractional mipmap level using `get_level()`
+2. **Level Selection**: Selecting two adjacent integer levels (floor and ceiling of the computed level)
+3. **Interpolation**: Computing the interpolation weight `t = level - floor(level)`
+4. **Color Sampling**: Sampling colors from both levels using the specified pixel sampling method
+5. **Final Interpolation**: Combining the colors using linear interpolation: `result = c₀*(1-t) + c₁*t`
+
+This provides smooth transitions between mipmap levels and reduces visual artifacts.
 
 ## Performance and Quality Tradeoffs
 
-[**TODO: Describe the tradeoffs between speed, memory usage, and antialiasing power between the three various techniques.**]
+The different sampling methods offer various tradeoffs between quality, performance, and memory usage:
 
 ### Comparison Table
 
 | Method                          | Quality | Performance | Memory Usage | Antialiasing Power |
 | ------------------------------- | ------- | ----------- | ------------ | ------------------ |
-| L_ZERO + P_NEAREST              | [TODO]  | [TODO]      | [TODO]       | [TODO]             |
-| L_ZERO + P_LINEAR               | [TODO]  | [TODO]      | [TODO]       | [TODO]             |
-| L_NEAREST + P_NEAREST           | [TODO]  | [TODO]      | [TODO]       | [TODO]             |
-| L_NEAREST + P_LINEAR            | [TODO]  | [TODO]      | [TODO]       | [TODO]             |
-| L_LINEAR + P_LINEAR (Trilinear) | [TODO]  | [TODO]      | [TODO]       | [TODO]             |
+| L_ZERO + P_NEAREST              | Low     | High        | Low          | None               |
+| L_ZERO + P_LINEAR               | Medium  | Medium      | Low          | Pixel-level only   |
+| L_NEAREST + P_NEAREST           | Medium  | High        | Medium       | Level-based only   |
+| L_NEAREST + P_LINEAR            | High    | Medium      | Medium       | Good               |
+| L_LINEAR + P_LINEAR (Trilinear) | Highest | Low         | High         | Best               |
 
-## Challenges and Solutions
+**Quality**: Trilinear filtering provides the highest quality by interpolating both within pixels and across mipmap levels.
 
-### Challenges Faced
+**Performance**: L_ZERO methods are fastest as they avoid level computation, while L_LINEAR requires sampling from two mipmap levels.
 
-- **Derivative Calculation**: Computing accurate texture coordinate derivatives
-- **Level Selection**: Determining the appropriate mipmap level
-- **Level Interpolation**: Smoothly interpolating between mipmap levels
-- **Performance Optimization**: Avoiding unnecessary mipmap copies
+**Memory Usage**: Higher quality methods require more memory bandwidth due to increased sampling operations.
 
-### Solutions Implemented
+**Antialiasing Power**: Trilinear filtering provides the best antialiasing by reducing both pixel-level and level-based artifacts.
 
-- **Derivative Computation**: [**TODO: Explain your derivative calculation approach**]
-- **Level Calculation**: [**TODO: Explain your mipmap level selection**]
-- **Interpolation Method**: [**TODO: Explain your level interpolation**]
-- **Memory Management**: [**TODO: Explain how you avoid copying miplevels**]
-
-## Mipmap Visualization
-
-### Level Debugging
-
-[**TODO: Explain how you used level visualization for debugging**]
-
-You can visualize mipmap levels by normalizing the level value and using it as a color:
-
-```
-Color debug_color = Color(level/max_level, level/max_level, level/max_level);
-```
-
-### Zoom Effects
-
-[**TODO: Show examples of how mipmap levels change with zoom**]
-
-## Extra Credit: Advanced Filtering
+<!-- ## Extra Credit: Advanced Filtering
 
 [**TODO: If you implemented extra credit, describe anisotropic filtering or summed area tables**]
 
 ### Method Description
 
-[**TODO: Explain your advanced filtering method**]
+[Note: No advanced filtering methods were implemented for this assignment. The implementation focuses on the core mipmap level sampling functionality.]
 
 ### Performance Comparison
 
-| Method          | Quality | Performance | Memory Usage |
-| --------------- | ------- | ----------- | ------------ |
-| Nearest         | [TODO]  | [TODO]      | [TODO]       |
-| Bilinear        | [TODO]  | [TODO]      | [TODO]       |
-| Trilinear       | [TODO]  | [TODO]      | [TODO]       |
-| Advanced Method | [TODO]  | [TODO]      | [TODO]       |
-
+| Method    | Quality | Performance | Memory Usage |
+| --------- | ------- | ----------- | ------------ |
+| Nearest   | Low     | High        | Low          |
+| Bilinear  | Medium  | Medium      | Low          |
+| Trilinear | High    | Low         | Medium       | -->
+<!--
 ### Comparison Images
 
-[**TODO: Show comparison images demonstrating the differences**]
+[Note: Advanced filtering comparison images would be included here if anisotropic filtering or other advanced methods were implemented.] -->
 
 ## Testing
 
 ### Test Files
 
-- Custom PNG texture files
-- Modified SVG files from `svg/texmap/`
-- Various zoom levels and viewing angles
-
-### Verification
-
-[**TODO: Explain how you verified your mipmap implementation works correctly**]
-
-## Integration with Previous Tasks
-
-### Building on Task 5
-
-[**TODO: Discuss how this extends the texture mapping from Task 5**]
-
-### Complete Pipeline
-
-[**TODO: Explain how all tasks work together in the final rendering pipeline**]
-
-## Conclusion
-
-[**TODO: Summary of what was learned about mipmaps and level sampling**]
-
-## Additional Examples
-
-[**TODO: Include any additional test cases or interesting mipmap effects**]
-
-### Custom Textures
-
-[**TODO: Show additional examples with different textures**]
-
-![Additional Examples](additional_mipmaps.png)
+- `svg/texmap/test1.svg`
+- `svg/texmap/test2.svg`
+- `svg/texmap/test4.svg`
+- `svg/texmap/test5.svg`
+- `svg/texmap/test6.svg`
+- `svg/texmap/car.svg`
