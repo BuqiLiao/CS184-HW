@@ -15,7 +15,8 @@ This task implements three fundamental geometric transformations (translate, sca
 
 ### Approach
 
-[**TODO: Explain your approach to implementing the three transforms in homogeneous coordinates**]
+[To represent translation, scaling, and rotation uniformly, we embed each point 
+(x,y) in homogeneous coordinates as (x,y,1). All three operations then become simple 3×3 matrix multiplications. By implementing those matrix calculations correctly, we naturally get the desired transformations.]
 
 ### Key Algorithms
 
@@ -24,54 +25,17 @@ This task implements three fundamental geometric transformations (translate, sca
 - **Rotation Matrix**: Rotate objects by specified angle around origin
 - **Homogeneous Coordinates**: Using 3×3 matrices for 2D transformations
 
-### Code Structure
-
-```cpp
-// Key implementations in transforms.cpp
-Matrix3x3 translate(float dx, float dy) {
-    // TODO: Implement translation matrix
-    // Returns 3x3 matrix that translates by (dx, dy)
-}
-
-Matrix3x3 scale(float sx, float sy) {
-    // TODO: Implement scaling matrix
-    // Returns 3x3 matrix that scales by (sx, sy)
-}
-
-Matrix3x3 rotate(float deg) {
-    // TODO: Implement rotation matrix
-    // Returns 3x3 matrix that rotates by deg degrees
-    // Note: deg is in degrees, convert to radians for sin/cos
-}
-```
 
 ## Results
 
-### Original Robot
-
-[**TODO: Show screenshot of the original svg/transforms/robot.svg rendering correctly**]
-
-![Original Robot](robot_original.png)
-
 ### Custom Robot Animation
 
-[**TODO: Create an updated version of svg/transforms/robot.svg with cubeman doing something more interesting, like waving or running. Save your svg file as my_robot.svg in your docs/ directory and show a png screenshot of your rendered drawing. Explain what you were trying to do with cubeman in words.**]
+[What I did is translate (50 -30) to both right and left outmost arm, and rotate them -90 degrees to make them "lift their hands" to show that they are strong. Also, I changed the color to yellow. ]
 
-![Custom Robot Animation](my_robot.png)
+![Custom Robot Animation](bot.png)
 
-### Animation Description
-
-[**TODO: Explain what you were trying to do with cubeman - describe the animation, poses, or actions you created**]
 
 ## Mathematical Foundation
-
-### Homogeneous Coordinates
-
-[**TODO: Explain why we use 3x3 matrices for 2D transformations**]
-
-### Transformation Matrices
-
-[**TODO: Show the mathematical form of each transformation matrix**]
 
 #### Translation Matrix
 
@@ -99,13 +63,7 @@ Matrix3x3 rotate(float deg) {
 
 ## Implementation Details
 
-### Matrix Operations
-
-[**TODO: Explain how the * operator works with Vector2D and Matrix3x3**]
-
 ### Hierarchical Transforms
-
-[**TODO: Explain how nested <g> elements with transforms work**]
 
 Example SVG structure:
 
@@ -119,57 +77,26 @@ Example SVG structure:
 </g>
 ```
 
-## Challenges and Solutions
-
-### Challenges Faced
-
-- **Angle Conversion**: Converting between degrees and radians
-- **Matrix Multiplication**: Ensuring correct order of transformations
-- **Hierarchical Transforms**: Understanding how nested transforms combine
-- **Coordinate Systems**: Working with homogeneous coordinates
-
-### Solutions Implemented
-
-- **Angle Handling**: [**TODO: Explain your approach to angle conversion**]
-- **Matrix Implementation**: [**TODO: Explain your matrix construction**]
-- **Transform Composition**: [**TODO: Explain how transforms combine**]
-- **Testing Strategy**: [**TODO: Explain how you tested your transforms**]
-
 ## Extra Credit: GUI Enhancement
 
-[**TODO: If you implemented extra credit, describe your GUI feature and show example images**]
+[we added two more button "[" and "]" where each can rotate counter-clockwise 10° and rotate clockwise 10° . To implement that, we have added a new function called void DrawRend::rotate_view(float deg), in line 479 of drawrend.cpp, which can rotate the current view around its center by the specified angle (deg degrees)]
 
-### Feature Description
-
-[**TODO: Describe the extra GUI feature you added**]
 
 ### Implementation Details
 
-[**TODO: Explain how you modified the SVG to NDC and NDC to screen-space matrix stack**]
+[The rotate_view method first finds the SVG-to-NDC matrix for the current document, then computes the SVG-space coordinates of the viewport center by applying the inverse transform to the NDC point (0.5, 0.5). It constructs a rotation matrix that translates this center to the origin, rotates by the given angle, and translates back. Finally, it post-multiplies the existing SVG→NDC matrix by this rotation, ensuring that subsequent SVG coordinates are rotated about the view center before being mapped into normalized device coordinates.]
 
 ### Example Image
 
-![Extra Credit Feature](extra_credit_demo.png)
+![Extra Credit Feature](rotate_view.png)
 
 ## Testing
 
 ### Test Files
 
 - `svg/transforms/robot.svg` - Basic transform testing
-- `my_robot.svg` - Custom animation demonstration
+- `robot.svg` - Custom animation demonstration
 
-### Verification
 
-[**TODO: Explain how you verified your transforms work correctly**]
 
-## Conclusion
 
-[**TODO: Summary of what was learned about geometric transformations and homogeneous coordinates**]
-
-## SVG File: my_robot.svg
-
-[**TODO: Include your custom robot SVG file content or reference to the file**]
-
-```xml
-<!-- TODO: Show your custom robot SVG code or reference the file -->
-```
