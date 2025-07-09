@@ -1,6 +1,7 @@
 ---
 title: Home
 layout: home
+nav_order: 0
 ---
 
 # CS184: Computer Graphics and Imaging
@@ -27,12 +28,12 @@ This assignment focuses on implementing fundamental rasterization algorithms and
 
 **Tasks:**
 
-- [Task 1](hw1/Task1/) - Basic rasterization concepts
-- [Task 2](hw1/Task2/) - Line and triangle drawing
-- [Task 3](hw1/Task3/) - Texture mapping
-- [Task 4](hw1/Task4/) - Geometric transformations
-- [Task 5](hw1/Task5/) - Advanced rendering techniques
-- [Task 6](hw1/Task6/) - Final project integration
+- [Task 1](hw1/Task1/) - Drawing Single-Color Triangles
+- [Task 2](hw1/Task2/) - Antialiasing by Supersampling
+- [Task 3](hw1/Task3/) - Geometric Transforms
+- [Task 4](hw1/Task4/) - Barycentric Coordinates
+- [Task 5](hw1/Task5/) - Pixel Sampling for Texture Mapping
+- [Task 6](hw1/Task6/) - Level Sampling with Mipmaps
 
 ## About This Site
 

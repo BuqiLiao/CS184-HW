@@ -1,5 +1,5 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: CS184 HW Writeup Webpages
+description: CS184 Computer Graphics and Imaging - Homework Documentation and Results
 theme: just-the-docs
 
 url: https://just-the-docs.github.io
@@ -8,4 +8,5 @@ head_scripts:
   - /assets/css/custom.css
 
 aux_links:
-  Template Repository: https://github.com/just-the-docs/just-the-docs-template
+  CS184 Course: https://cs184.eecs.berkeley.edu/
+  Course Materials: https://cs184.eecs.berkeley.edu/sp24
