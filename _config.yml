@@ -2,7 +2,11 @@ title: CS184 HW Writeup Webpages
 description: CS184 Computer Graphics and Imaging - Homework Documentation and Results
 theme: just-the-docs
 
-url: https://just-the-docs.github.io
+url: https://buqiliao.github.io
+baseurl: "/CS184-HW"
+
+plugins:
+  - jekyll-remote-theme
 
 head_scripts:
   - /assets/css/custom.css
