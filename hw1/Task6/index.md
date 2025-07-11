@@ -164,25 +164,51 @@ The different sampling methods offer various tradeoffs between quality, performa
 
 **Antialiasing Power**: Trilinear filtering provides the best antialiasing by reducing both pixel-level and level-based artifacts.
 
-<!-- ## Extra Credit: Advanced Filtering
+## Extra Credit: Anisotropic Filtering
 
-[**TODO: If you implemented extra credit, describe anisotropic filtering or summed area tables**]
+I implemented anisotropic filtering as an advanced texture filtering method that addresses the limitations of isotropic filtering methods like trilinear filtering. Anisotropic filtering is particularly effective for surfaces viewed at oblique angles, where the texture footprint becomes highly elongated.
 
 ### Method Description
 
-[Note: No advanced filtering methods were implemented for this assignment. The implementation focuses on the core mipmap level sampling functionality.]
+Anisotropic filtering works by:
+
+1. **Anisotropy Detection**: Computing the major and minor axes of the texture footprint using texture coordinate derivatives
+2. **Adaptive Sampling**: Taking multiple samples along the major axis direction to capture the full anisotropic footprint
+3. **Level Selection**: Using the minor axis length to determine appropriate mipmap levels for each sample
+4. **Weighted Averaging**: Combining samples with Gaussian-like weights based on distance from the center
+
+The key insight is that when a surface is viewed obliquely, the texture footprint becomes elongated along one direction. Instead of using a square sampling pattern (like bilinear/trilinear), anisotropic filtering samples along the major axis of this footprint, providing much better quality for angled surfaces.
 
 ### Performance Comparison
 
-| Method    | Quality | Performance | Memory Usage |
-| --------- | ------- | ----------- | ------------ |
-| Nearest   | Low     | High        | Low          |
-| Bilinear  | Medium  | Medium      | Low          |
-| Trilinear | High    | Low         | Medium       | -->
-<!--
-### Comparison Images
+| Method                          | Quality     | Performance | Memory Usage | Anialiasing Power |
+| ------------------------------- | ----------- | ----------- | ------------ | ----------------- |
+| L_ZERO + P_NEAREST              | Low         | High        | Low          | None              |
+| L_ZERO + P_LINEAR               | Medium      | Medium      | Low          | Pixel-level only  |
+| L_NEAREST + P_NEAREST           | Medium      | High        | Medium       | Level-based only  |
+| L_NEAREST + P_LINEAR            | High        | Medium      | Medium       | Good              |
+| L_LINEAR + P_LINEAR (Trilinear) | High        | Low         | High         | Very Good         |
+| **Anisotropic Filtering**       | **Highest** | **Lowest**  | **Highest**  | **Best**          |
 
-[Note: Advanced filtering comparison images would be included here if anisotropic filtering or other advanced methods were implemented.] -->
+### Benchmark Results
+
+Run `./anisotropic_bench` to see performance comparison:
+
+- **Nearest + Zero Level**: 1011.28 ms (4.04x speedup)
+- **Bilinear + Zero Level**: 1700.47 ms (2.40x speedup)
+- **Bilinear + Nearest Level**: 2299.76 ms (1.78x speedup)
+- **Trilinear**: 3115.65 ms (1.31x speedup)
+- **Anisotropic Filtering**: 4087.71 ms (baseline)
+
+### Visual Comparison
+
+**Trilinear Filtering:**
+![Trilinear](trilinear_example.png)
+
+**Anisotropic Filtering:**
+![Anisotropic](anisotropic_example.png)
+
+Anisotropic filtering shows sharper textures on angled surfaces, while trilinear filtering appears blurrier due to isotropic sampling.
 
 ## Testing
 
