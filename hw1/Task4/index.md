@@ -19,7 +19,6 @@ This task implements barycentric coordinate interpolation for triangles, allowin
 - **Barycentric Coordinate Calculation**: Computing (α, β, γ) coordinates for each pixel
 - **Color Interpolation**: Linear interpolation of vertex colors using barycentric weights
 - **Point-in-Triangle Test**: Using barycentric coordinates for inside/outside testing
-- **Smooth Blending**: Ensuring continuous color transitions across triangle boundaries
 
 
 
@@ -39,37 +38,21 @@ The interpolated color at point P is:
 **C(P) = αC(A) + βC(B) + γC(C)**
 
 where C(A), C(B), C(C) are the colors at vertices A, B, and C respectively.
-
-### Barycentric Coordinate Calculation
-
-
-For a triangle with vertices A(x₀,y₀), B(x₁,y₁), C(x₂,y₂) and point P(x,y):
-
-```
-α = ((y₁-y₂)(x-x₂) + (x₂-x₁)(y-y₂)) / ((y₁-y₂)(x₀-x₂) + (x₂-x₁)(y₀-y₂))
-β = ((y₂-y₀)(x-x₂) + (x₀-x₂)(y-y₂)) / ((y₁-y₂)(x₀-x₂) + (x₂-x₁)(y₀-y₂))
-γ = 1 - α - β
-```
+For example, given a triangle whose three vertices are colored red, blue, and green, the color at any point inside it is computed by taking a weighted average of those vertex colors—where the weights (the barycentric coordinates) reflect the point’s relative proximity to each of the three vertices.
 
 ## Results
 
 
-![Color Wheel](test7_color_wheel.png)
+![Color Wheel](test7.png)
 
 
-![RGB Triangle](rgb_triangle.png)
-
-## Implementation Details
 
 
-## Testing
 
 ### Test Files
 
 - `svg/basic/test7.svg` - Color wheel demonstration
-- Custom RGB triangle for barycentric coordinate visualization
 
 
 
-## Comparison with Previous Tasks
 
