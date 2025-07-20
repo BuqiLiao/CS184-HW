@@ -15,8 +15,8 @@ This task implements three fundamental geometric transformations (translate, sca
 
 ### Approach
 
-[To represent translation, scaling, and rotation uniformly, we embed each point 
-(x,y) in homogeneous coordinates as (x,y,1). All three operations then become simple 3×3 matrix multiplications. By implementing those matrix calculations correctly, we naturally get the desired transformations.]
+To represent translation, scaling, and rotation uniformly, we embed each point
+(x,y) in homogeneous coordinates as (x,y,1). All three operations then become simple 3×3 matrix multiplications. By implementing those matrix calculations correctly, we naturally get the desired transformations.
 
 ### Key Algorithms
 
@@ -25,15 +25,13 @@ This task implements three fundamental geometric transformations (translate, sca
 - **Rotation Matrix**: Rotate objects by specified angle around origin
 - **Homogeneous Coordinates**: Using 3×3 matrices for 2D transformations
 
-
 ## Results
 
 ### Custom Robot Animation
 
-[What I did is translate (50 -30) to both right and left outmost arm, and rotate them -90 degrees to make them "lift their hands" to show that they are strong. Also, I changed the color to yellow. ]
+What I did is translate (50 -30) to both right and left outmost arm, and rotate them -90 degrees to make them "lift their hands" to show that they are strong. Also, I changed the color to yellow.
 
 ![Custom Robot Animation](bot.png)
-
 
 ## Mathematical Foundation
 
@@ -81,7 +79,6 @@ Example SVG structure:
 
 [we added two more button "[" and "]" where each can rotate counter-clockwise 10° and rotate clockwise 10° . To implement that, we have added a new function called void DrawRend::rotate_view(float deg), in line 479 of drawrend.cpp, which can rotate the current view around its center by the specified angle (deg degrees)]
 
-
 ### Implementation Details
 
 [The rotate_view method first finds the SVG-to-NDC matrix for the current document, then computes the SVG-space coordinates of the viewport center by applying the inverse transform to the NDC point (0.5, 0.5). It constructs a rotation matrix that translates this center to the origin, rotates by the given angle, and translates back. Finally, it post-multiplies the existing SVG→NDC matrix by this rotation, ensuring that subsequent SVG coordinates are rotated about the view center before being mapped into normalized device coordinates.]
@@ -96,7 +93,3 @@ Example SVG structure:
 
 - `svg/transforms/robot.svg` - Basic transform testing
 - `robot.svg` - Custom animation demonstration
-
-
-
-
