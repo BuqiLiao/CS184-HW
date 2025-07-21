@@ -5,7 +5,7 @@ parent: Homework 2
 nav_order: 5
 ---
 
-# Part 5: Edge Split
+# Task 5: Edge Split
 
 ## Implementation
 
