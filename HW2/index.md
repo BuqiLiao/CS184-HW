@@ -48,3 +48,19 @@ Implement edge splitting operation that inserts a new vertex at the edge midpoin
 **Loop Subdivision for Mesh Upsampling**
 
 Implement loop subdivision algorithm to upsample coarse meshes into higher-resolution ones. This involves subdividing triangles and updating vertex positions using weighted averages.
+
+## Overview
+
+Implemented:
+
+- 1D Bézier curve evaluation via de Casteljau.
+- 2D Bézier surface using separable de Casteljau.
+- Area-weighted vertex normals for smooth shading.
+- Half-edge edge flip and edge split operations.
+- Loop subdivision for mesh upsampling.
+
+Key takeaways:
+
+- Geometric intuition of Bézier interpolation.
+- Robust pointer bookkeeping in the half-edge structure.
+- Visualization accelerates debugging and validation.
