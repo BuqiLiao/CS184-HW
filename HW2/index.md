@@ -11,6 +11,20 @@ has_children: true
 
 This homework assignment covers fundamental concepts in geometric modeling and mesh processing. The assignment is divided into 6 parts, exploring Bezier curves and surfaces using de Casteljau algorithm, and implementing various mesh operations using the half-edge data structure.
 
+Implemented:
+
+- 1D Bézier curve evaluation via de Casteljau.
+- 2D Bézier surface using separable de Casteljau.
+- Area-weighted vertex normals for smooth shading.
+- Half-edge edge flip and edge split operations.
+- Loop subdivision for mesh upsampling.
+
+Key takeaways:
+
+- Geometric intuition of Bézier interpolation.
+- Robust pointer bookkeeping in the half-edge structure.
+- Visualization accelerates debugging and validation.
+
 ## Tasks
 
 ### [Task 1](Task1/)
@@ -48,19 +62,3 @@ Implement edge splitting operation that inserts a new vertex at the edge midpoin
 **Loop Subdivision for Mesh Upsampling**
 
 Implement loop subdivision algorithm to upsample coarse meshes into higher-resolution ones. This involves subdividing triangles and updating vertex positions using weighted averages.
-
-## Overview
-
-Implemented:
-
-- 1D Bézier curve evaluation via de Casteljau.
-- 2D Bézier surface using separable de Casteljau.
-- Area-weighted vertex normals for smooth shading.
-- Half-edge edge flip and edge split operations.
-- Loop subdivision for mesh upsampling.
-
-Key takeaways:
-
-- Geometric intuition of Bézier interpolation.
-- Robust pointer bookkeeping in the half-edge structure.
-- Visualization accelerates debugging and validation.
