@@ -36,34 +36,13 @@ With these pieces the renderer can march paths of arbitrary length while remaini
 
 | Scene | Direct only | Indirect only | Full GI |
 |-------|-------------|---------------|---------|
-| CBbunny | ![bunny_direct](bunny_direct.png) | ![bunny_indirect](bunny_indirect.png) | ![bunny_full](bunny_full.png) |
-
-### Bounce-by-bounce visualisation (CBbunny)
-Below each image shows **only** the light from the *m-th* bounce (`-m` flag, `isAccumBounces=false`).
-
-| m = 0 | m = 1 | m = 2 | m = 3 | m = 4 | m = 5 |
-|-------|-------|-------|-------|-------|-------|
-| ![b0](b0.png) | ![b1](b1.png) | ![b2](b2.png) | ![b3](b3.png) | ![b4](b4.png) | ![b5](b5.png) |
-
-### Accumulated vs. single-bounce lighting (CBbunny)
-Each column pairs the accumulated image (top) with the isolated bounce (bottom).
-
-| m = 0 | m = 1 | m = 2 | m = 3 | m = 4 | m = 5 |
-|-------|-------|-------|-------|-------|-------|
-| ![acc0](acc0.png)<br/>![single0](b0.png) | ![acc1](acc1.png)<br/>![single1](b1.png) | ![acc2](acc2.png)<br/>![single2](b2.png) | ![acc3](acc3.png)<br/>![single3](b3.png) | ![acc4](acc4.png)<br/>![single4](b4.png) | ![acc5](acc5.png)<br/>![single5](b5.png) |
-
-### Russian-Roulette depth study
-`-m` = 0 … 100 with RR enabled (p=0.3):
-
-| 0 | 1 | 2 | 3 | 4 | 100 |
-|---|---|---|---|---|-----|
-| ![rr0](rr0.png) | ![rr1](rr1.png) | ![rr2](rr2.png) | ![rr3](rr3.png) | ![rr4](rr4.png) | ![rr100](rr100.png) |
+| CBbunny | ![s](sphere_d.png) | ![s](spheres_ind.png) | ![s](spheres.png) |
 
 ### Convergence with samples-per-pixel (CBspheres, 4 light rays)
 
 | 1 | 2 | 4 | 8 | 16 | 64 | 1024 |
 |---|---|---|---|----|----|------|
-| ![s1](s1.png) | ![s2](s2.png) | ![s4](s4.png) | ![s8](s8.png) | ![s16](s16.png) | ![s64](s64.png) | ![s1024](s1024.png) |
+| ![s1](spheres1.png) | ![s2](spheres2.png) | ![s4](spheres4.png) | ![s8](spheres8.png) | ![s16](spheres16.png) | ![s64](spheres64.png) | ![s1024](spheres1024.png) |
 
 ## Analysis
 **Indirect-lighting implementation.** The recursive estimator treats the rendering equation as a path integral: it adds the direct term, then randomly walks the path by sampling the diffuse BSDF.  Each step attenuates radiance by the BRDF, cosine, and the inverse of the Russian-Roulette survival probability; this keeps the estimator unbiased while adaptively shortening low-energy paths.
