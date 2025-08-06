@@ -5,7 +5,7 @@ parent: Homework 2
 nav_order: 6
 ---
 
-# Part 6: Loop Subdivision for Mesh Upsampling
+# Task 6: Loop Subdivision for Mesh Upsampling
 
 ## Implementation
 
