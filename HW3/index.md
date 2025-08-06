@@ -21,4 +21,3 @@ This assignment builds a physically based Monte-Carlo path tracer in five increm
    Extend the integrator to multiple bounces, implement Russian Roulette, and render full colour bleeding.
 5. [Part 5 – Adaptive Sampling](part5/)  
    Use per-pixel variance estimates to stop sampling early where the image has already converged.
- 
