@@ -49,7 +49,7 @@ With these pieces the renderer can march paths of arbitrary length while remaini
 ### CBbunny with Russian Roulette rendering
 | m=1 | m=2 | m=3 | m=4 | m=5 | m=100  |
 |-------|-------------|---------------|---------|----------|------|
-| ![b](bunny1.png) | ![s](bunny2.png) | ![s](bunny3.png) | ![s](bunny4.png) |![s](bunny5.png) |![s](bunny100.png)|
+| ![b](Bunny1.png) | ![s](Bunny2.png) | ![s](Bunny3.png) | ![s](Bunny4.png) |![s](Bunny5.png) |![s](Bunny100.png)|
 
 ### Convergence with samples-per-pixel (CBspheres, 4 light rays)
 
