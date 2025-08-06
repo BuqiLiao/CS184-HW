@@ -24,6 +24,8 @@ This is Part 3 of HW3.
 
 ## Importance-sampled lighting 
 ![bunny_H_64_32](bunny_64_32.png)
+![dragon_H_64_32](dragon_64_32.png)
+
 
 ## 4 different light rays
 ![bunny_l1](bunny_l1.png)

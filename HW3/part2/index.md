@@ -52,11 +52,11 @@ Rendering times (800×600, 8 threads):
 
 | Scene | Primitives | Brute Force (s) | BVH (s) |
 | ----- | ---------- | --------------- | ------- |
-| cow.dae | 5 k | 40 | 0.17 |
-| maxplanck.dae | 50 k | >300 | 0.45 |
+| cow.dae | 5 k | 40 | 0.0017 |
+| maxplanck.dae | 50 k | >300 | 0.14 |
 
 ---
 ## Write-Up
 **BVH construction.** Starting from the full primitive list I first enclose it in a bounding box, then decide whether to turn the node into a leaf (≤ `max_leaf_size` elements) or split it. To split, I measure the span of *centroid positions* along x, y and z, choose the axis with the largest extent, and place the cut at the centroid *mid-point* on that axis. This “largest-extent midpoint” heuristic costs almost nothing to compute, yet produces roughly balanced sub-trees and keeps individual boxes tight. If the midpoint happens to leave one side empty I fall back to a median split to guarantee progress.
 
-**BVH impact.** With the hierarchy in place normal-shading renders of large meshes such as `cow.dae` (5 k tris) and `maxplanck.dae` (≈50 k tris) complete in 0.2–0.5 s, whereas the brute-force version took tens to hundreds of seconds. On moderately complex models like `banana.dae` or `CBdragon.dae` the speed-up is similar—two to three orders of magnitude—without any loss in visual fidelity. These results confirm that the BVH prunes most ray–triangle tests and is indispensable for the path tracer to remain interactive in later parts that fire many secondary rays per pixel.
+**BVH impact.** With the hierarchy in place normal-shading renders of large meshes such as `cow.dae` (5 k tris) and `maxplanck.dae` (50 k tris) complete within 1 s, whereas the brute-force version took hundreds of seconds. These results confirm that the BVH prunes most ray–triangle tests and is indispensable for the path tracer to remain interactive in later parts that fire many secondary rays per pixel.

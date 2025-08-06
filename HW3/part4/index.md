@@ -38,6 +38,19 @@ With these pieces the renderer can march paths of arbitrary length while remaini
 |-------|-------------|---------------|---------|
 | CBbunny | ![s](sphere_d.png) | ![s](spheres_ind.png) | ![s](spheres.png) |
 
+
+
+### Per-bounce images (isAccumBounces = true)
+ m = 1 | m = 2 | m = 3 | m = 4 | m = 5 |
+-------|-------|-------|-------|-------|
+| ![b1](bunnytm1.png) | ![b2](bunnytm2.png) | ![b3](bunnytm3.png) | ![b4](bunnytm4.png) | ![b5](bunnytm5.png) | 
+
+
+### CBbunny with Russian Roulette rendering
+| m=1 | m=2 | m=3 | m=4 | m=5 | m=100  |
+|-------|-------------|---------------|---------|----------|------|
+| ![b](bunny1.png) | ![s](bunny2.png) | ![s](bunny3.png) | ![s](bunny4.png) |![s](bunny5.png) |![s](bunny100.png)|
+
 ### Convergence with samples-per-pixel (CBspheres, 4 light rays)
 
 | 1 | 2 | 4 | 8 | 16 | 64 | 1024 |
@@ -49,8 +62,11 @@ With these pieces the renderer can march paths of arbitrary length while remaini
 
 **Visual impact of higher bounces.** In the bounce-by-bounce images we observe that the first indirect bounce (m = 1) introduces strong colour bleeding—the red wall tints the bunny’s flank—while the second and third bounces add subtle ambient fills that lift the remaining shadows.  Beyond the third bounce contributions are barely perceptible, matching the diminishing energy predicted by theory.
 
-**Accumulated vs. single-bounce views.** Comparing the two confirms that although individual high-order bounces are dim, their accumulation significantly reduces contrast in occluded regions, producing a more natural result than direct lighting alone.
+**Accumulated vs. single-bounce views.** 
+ Because only paths that exactly bounce 
+m times contribute, higher-order terms are increasingly weak and diffuse—by the time you reach the 3rd or 4th bounce, almost every path has been absorbed or scattered away, so the image becomes very dark and uniformly gray.
+Accumulated mode (isAccumBounces=true) sums all termsThe zero-bounce term gives self-emission, the first bounce adds crisp direct lighting and hard shadows, and the second bounce (first indirect) fills in deep shadows with soft, low-intensity light. By the third and fourth bounces, we can see smooth color bleeding and gently brightened corners.
 
-**Russian Roulette effectiveness.** Depth-limited images show that allowing paths to extend beyond four bounces hardly changes the picture; Russian-Roulette therefore saves computation without visible artefacts.  Rendering with `-m 100` converges to the same solution while evaluating only ~3.3 bounces on average.
+**Russian Roulette effectiveness.** Depth-limited images show that as the m increases, the noise point would decreases but not totally disappear,(it might because we didn't use too much light rays).
 
 **Sample convergence.** The spheres sequence demonstrates classic Monte-Carlo behaviour: doubling spp roughly halves the noise.  Notably, moving from 16→64 spp produces a visible improvement, while 64→1024 spp mainly polishes the last traces of grain—an important guideline for picking sample budgets in practice. 
