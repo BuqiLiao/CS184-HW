@@ -21,3 +21,8 @@ This assignment builds a physically based Monte-Carlo path tracer in five increm
    Extend the integrator to multiple bounces, implement Russian Roulette, and render full colour bleeding.
 5. [Part 5 – Adaptive Sampling](part5/)  
    Use per-pixel variance estimates to stop sampling early where the image has already converged.
+
+## Acknowledgement of AI
+
+AI used in the homework: GPT 5.
+I used it in debugging Task 2 in part 4 where I have a small error on the 'at_least_one_bounce_radiance' when calculating the light bounces; Also, I use AI to generate some test cases and debugging information, eg. (print out the messages of the light reflected numbers when rendering).
